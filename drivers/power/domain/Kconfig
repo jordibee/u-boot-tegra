@@ -24,4 +24,11 @@ config TEGRA186_POWER_DOMAIN
 	  Enable support for manipulating Tegra's on-SoC power domains via IPC
 	  requests to the BPMP (Boot and Power Management Processor).
 
+config TEGRA194_POWER_DOMAIN
+	bool "Enable Tegra194 BPMP-based power domain driver"
+	depends on TEGRA194_BPMP
+	help
+	  Enable support for manipulating Tegra's on-SoC power domains via IPC
+	  requests to the BPMP (Boot and Power Management Processor).
+
 endmenu

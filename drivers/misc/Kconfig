@@ -142,6 +142,18 @@ config TEGRA186_BPMP
 	  can make requests to the BPMP. This driver is similar to an MFD
 	  driver in the Linux kernel.
 
+config TEGRA194_BPMP
+	bool "Enable support for the Tegra186 BPMP driver"
+	depends on TEGRA194
+	help
+	  The Tegra BPMP (Boot and Power Management Processor) is a separate
+	  auxiliary CPU embedded into Tegra to perform power management work,
+	  and controls related features such as clocks, resets, power domains,
+	  PMIC I2C bus, etc. This driver provides the core low-level
+	  communication path by which feature-specific drivers (such as clock)
+	  can make requests to the BPMP. This driver is similar to an MFD
+	  driver in the Linux kernel.
+
 config WINBOND_W83627
 	bool "Enable Winbond Super I/O driver"
 	help

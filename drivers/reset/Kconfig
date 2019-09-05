@@ -27,4 +27,11 @@ config TEGRA186_RESET
 	  Enable support for manipulating Tegra's on-SoC reset signals via IPC
 	  requests to the BPMP (Boot and Power Management Processor).
 
+config TEGRA194_RESET
+	bool "Enable Tegra194 BPMP-based reset driver"
+	depends on TEGRA194_BPMP
+	help
+	  Enable support for manipulating Tegra's on-SoC reset signals via IPC
+	  requests to the BPMP (Boot and Power Management Processor).
+
 endmenu

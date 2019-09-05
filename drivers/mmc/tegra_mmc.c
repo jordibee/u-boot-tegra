@@ -12,7 +12,7 @@
 #include <dm/device.h>
 #include <asm/gpio.h>
 #include <asm/io.h>
-#ifndef CONFIG_TEGRA186
+#if !defined(CONFIG_TEGRA186) && !defined(CONFIG_TEGRA194)
 #include <asm/arch/clock.h>
 #include <asm/arch-tegra/clk_rst.h>
 #endif
@@ -369,7 +369,7 @@ static void mmc_change_clock(struct mmc_host *host, uint clock)
 	 */
 	if (clock == 0)
 		goto out;
-#ifdef CONFIG_TEGRA186
+#if defined(CONFIG_TEGRA186) || defined(CONFIG_TEGRA194)
 	{
 		ulong rate = clk_set_rate(&host->clk, clock);
 		div = (rate + clock - 1) / clock;
@@ -551,7 +551,7 @@ static int do_mmc_init(int dev_index, bool removable)
 {
 	struct mmc_host *host;
 	struct mmc *mmc;
-#ifdef CONFIG_TEGRA186
+#if defined(CONFIG_TEGRA186) || defined(CONFIG_TEGRA194)
 	int ret;
 #endif
 
@@ -566,7 +566,7 @@ static int do_mmc_init(int dev_index, bool removable)
 
 	host->clock = 0;
 
-#ifdef CONFIG_TEGRA186
+#if defined(CONFIG_TEGRA186) || defined(CONFIG_TEGRA194)
 	ret = reset_assert(&host->reset_ctl);
 	if (ret)
 		return ret;
@@ -638,7 +638,7 @@ static int mmc_get_config(const void *blob, int node, struct mmc_host *host,
 		return -FDT_ERR_NOTFOUND;
 	}
 
-#ifdef CONFIG_TEGRA186
+#if defined(CONFIG_TEGRA186) || defined(CONFIG_TEGRA194)
 	{
 		/*
 		 * FIXME: This variable should go away when the MMC device
@@ -685,7 +685,7 @@ static int mmc_get_config(const void *blob, int node, struct mmc_host *host,
 
 	debug("%s: found controller at %p, width = %d, periph_id = %d\n",
 		__func__, host->reg, host->width,
-#ifndef CONFIG_TEGRA186
+#if !defined(CONFIG_TEGRA186) && !defined(CONFIG_TEGRA194)
 		host->mmc_id
 #else
 		-1
@@ -733,6 +733,16 @@ void tegra_mmc_init(void)
 	int node_list[CONFIG_SYS_MMC_MAX_DEVICE], count;
 	const void *blob = gd->fdt_blob;
 	debug("%s entry\n", __func__);
+
+	/* See if any Tegra194 MMC controllers are present */
+	count = fdtdec_find_aliases_for_id(blob, "sdhci",
+		COMPAT_NVIDIA_TEGRA194_SDMMC, node_list,
+		CONFIG_SYS_MMC_MAX_DEVICE);
+	debug("%s: count of Tegra194 sdhci nodes is %d\n", __func__, count);
+	if (process_nodes(blob, node_list, count)) {
+		printf("%s: Error processing T194 mmc node(s)!\n", __func__);
+		return;
+	}
 
 	/* See if any Tegra186 MMC controllers are present */
 	count = fdtdec_find_aliases_for_id(blob, "sdhci",

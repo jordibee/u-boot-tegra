@@ -137,7 +137,7 @@ struct mmc_host {
 	int id;			/* device id/number, 0-3 */
 	int enabled;		/* 1 to enable, 0 to disable */
 	int width;		/* Bus Width, 1, 4 or 8 */
-#ifdef CONFIG_TEGRA186
+#ifdef defined(CONFIG_TEGRA186) || defined(CONFIG_TEGRA194)
 	struct reset_ctl reset_ctl;
 	struct clk clk;
 #else

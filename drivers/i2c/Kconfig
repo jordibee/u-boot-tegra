@@ -164,6 +164,16 @@ config TEGRA186_BPMP_I2C
 	  by the BPMP, and can only be accessed by the main CPU via IPC
 	  requests to the BPMP. This driver covers the latter case.
 
+config TEGRA194_BPMP_I2C
+	bool "Enable Tegra194 BPMP-based I2C driver"
+	depends on TEGRA194_BPMP
+	help
+	  Support for Tegra I2C controllers managed by the BPMP (Boot and
+	  Power Management Processor). On Tegra194, some I2C controllers are
+	  directly controlled by the main CPU, whereas others are controlled
+	  by the BPMP, and can only be accessed by the main CPU via IPC
+	  requests to the BPMP. This driver covers the latter case.
+
 source "drivers/i2c/muxes/Kconfig"
 
 endmenu

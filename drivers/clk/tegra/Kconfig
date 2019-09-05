@@ -4,3 +4,10 @@ config TEGRA186_CLOCK
 	help
 	  Enable support for manipulating Tegra's on-SoC clocks via IPC
 	  requests to the BPMP (Boot and Power Management Processor).
+
+config TEGRA194_CLOCK
+	bool "Enable Tegra194 BPMP-based clock driver"
+	depends on TEGRA194_BPMP
+	help
+	  Enable support for manipulating Tegra's on-SoC clocks via IPC
+	  requests to the BPMP (Boot and Power Management Processor).

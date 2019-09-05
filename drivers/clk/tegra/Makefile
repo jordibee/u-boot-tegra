@@ -3,3 +3,4 @@
 # SPDX-License-Identifier: GPL-2.0
 
 obj-$(CONFIG_TEGRA186_CLOCK) += tegra186-clk.o
+obj-$(CONFIG_TEGRA194_CLOCK) += tegra186-clk.o
