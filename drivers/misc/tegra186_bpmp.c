@@ -14,7 +14,11 @@
 #include <asm/arch-tegra/ivc.h>
 
 #define BPMP_IVC_FRAME_COUNT 1
+#if defined(CONFIG_TEGRA186)
 #define BPMP_IVC_FRAME_SIZE 128
+#elif defined(CONFIG_TEGRA194)
+#define BPMP_IVC_FRAME_SIZE 256
+#endif
 
 #define BPMP_FLAG_DO_ACK	BIT(0)
 #define BPMP_FLAG_RING_DOORBELL	BIT(1)

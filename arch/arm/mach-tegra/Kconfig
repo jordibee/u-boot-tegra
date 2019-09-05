@@ -82,6 +82,19 @@ config TEGRA186
 	select TEGRA_HSP
 	select TEGRA_IVC
 
+config TEGRA194
+	bool "Tegra194 family"
+	select CLK
+	select DM_MAILBOX
+	select DM_RESET
+	select MISC
+	select TEGRA194_BPMP
+	select TEGRA194_CLOCK
+	select TEGRA194_RESET
+	select TEGRA_ARMV8_COMMON
+	select TEGRA_HSP
+	select TEGRA_IVC
+
 endchoice
 
 config TEGRA_DISCONNECT_UDC_ON_BOOT
@@ -106,5 +119,6 @@ source "arch/arm/mach-tegra/tegra114/Kconfig"
 source "arch/arm/mach-tegra/tegra124/Kconfig"
 source "arch/arm/mach-tegra/tegra210/Kconfig"
 source "arch/arm/mach-tegra/tegra186/Kconfig"
+source "arch/arm/mach-tegra/tegra194/Kconfig"
 
 endif

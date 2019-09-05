@@ -12,7 +12,7 @@
 #include <fdtdec.h>
 #include <i2c.h>
 #include <asm/io.h>
-#ifdef CONFIG_TEGRA186
+#if defined(CONFIG_TEGRA186) || defined(CONFIG_TEGRA194)
 #include <clk.h>
 #include <reset.h>
 #else
@@ -44,7 +44,7 @@ enum i2c_type {
 /* Information about i2c controller */
 struct i2c_bus {
 	int			id;
-#ifdef CONFIG_TEGRA186
+#if defined(CONFIG_TEGRA186) || defined(CONFIG_TEGRA194)
 	struct reset_ctl	reset_ctl;
 	struct clk		clk;
 #else
@@ -81,7 +81,7 @@ static void set_packet_mode(struct i2c_bus *i2c_bus)
 static void i2c_reset_controller(struct i2c_bus *i2c_bus)
 {
 	/* Reset I2C controller. */
-#ifdef CONFIG_TEGRA186
+#if defined(CONFIG_TEGRA186) || defined(CONFIG_TEGRA194)
 	reset_assert(&i2c_bus->reset_ctl);
 	udelay(1);
 	reset_deassert(&i2c_bus->reset_ctl);
@@ -94,7 +94,7 @@ static void i2c_reset_controller(struct i2c_bus *i2c_bus)
 	set_packet_mode(i2c_bus);
 }
 
-#ifdef CONFIG_TEGRA186
+#if defined(CONFIG_TEGRA186) || defined(CONFIG_TEGRA194)
 static int i2c_init_clock(struct i2c_bus *i2c_bus, unsigned rate)
 {
 	int ret;
@@ -126,7 +126,7 @@ static void i2c_init_controller(struct i2c_bus *i2c_bus)
 	 * here, in section 23.3.1, but in fact we seem to need a factor of
 	 * 16 to get the right frequency.
 	 */
-#ifdef CONFIG_TEGRA186
+#if defined(CONFIG_TEGRA186) || defined(CONFIG_TEGRA194)
 	i2c_init_clock(i2c_bus, i2c_bus->speed * 2 * 8);
 #else
 	clock_start_periph_pll(i2c_bus->periph_id, CLOCK_ID_PERIPH,
@@ -151,7 +151,7 @@ static void i2c_init_controller(struct i2c_bus *i2c_bus)
 		debug("%s: CLK_DIV_STD_FAST_MODE setting = %d\n", __func__,
 			clk_div_stdfst_mode);
 
-#ifdef CONFIG_TEGRA186
+#if defined(CONFIG_TEGRA186) || defined(CONFIG_TEGRA194)
 		i2c_init_clock(i2c_bus, rate);
 #else
 		clock_start_periph_pll(i2c_bus->periph_id, CLOCK_ID_PERIPH,
@@ -169,7 +169,7 @@ static void i2c_init_controller(struct i2c_bus *i2c_bus)
 		setbits_le32(&dvc->ctrl3, DVC_CTRL_REG3_I2C_HW_SW_PROG_MASK);
 	}
 
-#ifndef CONFIG_TEGRA186
+#if !defined(CONFIG_TEGRA186) && !defined(CONFIG_TEGRA194)
 	funcmux_select(i2c_bus->periph_id, i2c_bus->pinmux_config);
 #endif
 }
@@ -392,7 +392,7 @@ static int tegra_i2c_set_bus_speed(struct udevice *dev, unsigned int speed)
 static int tegra_i2c_probe(struct udevice *dev)
 {
 	struct i2c_bus *i2c_bus = dev_get_priv(dev);
-#ifdef CONFIG_TEGRA186
+#if defined(CONFIG_TEGRA186) || defined(CONFIG_TEGRA194)
 	int ret;
 #else
 	const void *blob = gd->fdt_blob;
@@ -408,7 +408,7 @@ static int tegra_i2c_probe(struct udevice *dev)
 	 * We don't have a binding for pinmux yet. Leave it out for now. So
 	 * far no one needs anything other than the default.
 	 */
-#ifdef CONFIG_TEGRA186
+#if defined(CONFIG_TEGRA186) || defined(CONFIG_TEGRA194)
 	ret = reset_get_by_name(dev, "i2c", &i2c_bus->reset_ctl);
 	if (ret) {
 		error("reset_get_by_name() failed: %d\n", ret);
@@ -446,7 +446,7 @@ static int tegra_i2c_probe(struct udevice *dev)
 	i2c_init_controller(i2c_bus);
 	debug("%s: controller bus %d at %p, periph_id %d, speed %d: ",
 	      is_dvc ? "dvc" : "i2c", dev->seq, i2c_bus->regs,
-#ifndef CONFIG_TEGRA186
+#if !defined(CONFIG_TEGRA186) && !defined(CONFIG_TEGRA194)
 	      i2c_bus->periph_id,
 #else
 	      -1,

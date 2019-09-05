@@ -1,0 +1,21 @@
+if TEGRA194
+
+choice
+	prompt "Tegra194 board select"
+
+config TARGET_P2972_0000
+	bool "NVIDIA Tegra194 P2972-0000 board"
+	help
+	  This is the board of Jetson AGX Xavier Developer Kit.
+
+endchoice
+
+config SYS_SOC
+	default "tegra194"
+
+config SYS_INIT_SP_BSS_OFFSET
+	default 524288
+
+source "board/nvidia/p2972-0000/Kconfig"
+
+endif
